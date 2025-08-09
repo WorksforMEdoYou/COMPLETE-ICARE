@@ -1,0 +1,41 @@
+# Ignore node_modules, Python cache, build artifacts, and logs
+node_modules
+dist
+build
+.cache
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment files
+.env
+.env.*
+!env.example  # Keep sample env file if you have one
+
+# Docker-related
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Git & VCS
+.git
+.gitignore
+.gitattributes
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor files
+.vscode
+.idea
+*.swp
+
+# Test coverage & reports
+coverage
+*.lcov
+reports

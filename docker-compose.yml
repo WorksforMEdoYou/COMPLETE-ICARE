@@ -1,0 +1,108 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: icare-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: icare_db
+      MYSQL_USER: icare_user
+      MYSQL_PASSWORD: icare_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - icare-network
+
+  # MongoDB
+  mongodb:
+    image: mongo:6.0
+    container_name: icare-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: adminpassword
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - icare-network
+
+  # BACKOFFICE Service
+  backoffice:
+    build:
+      context: ./BACKOFFICE
+      dockerfile: Dockerfile
+    container_name: icare-backoffice
+    environment:
+      - DATABASE_URL=mysql+pymysql://icare_user:icare_password@mysql:3306/icare_db
+      - MONGODB_URL=mongodb://admin:adminpassword@mongodb:27017/
+    ports:
+      - "8001:8000"
+    depends_on:
+      - mysql
+      - mongodb
+    networks:
+      - icare-network
+
+  # ICARE STORE Service
+  icare-store:
+    build:
+      context: ./ICARE STORE
+      dockerfile: Dockerfile
+    container_name: icare-store
+    environment:
+      - DATABASE_URL=mysql+pymysql://icare_user:icare_password@mysql:3306/icare_db
+      - MONGODB_URL=mongodb://admin:adminpassword@mongodb:27017/
+    ports:
+      - "8002:8000"
+    depends_on:
+      - mysql
+      - mongodb
+    networks:
+      - icare-network
+
+  # ICARE SUBSCRIBER Service
+  icare-subscriber:
+    build:
+      context: ./ICARE SUBSCRIBER
+      dockerfile: Dockerfile
+    container_name: icare-subscriber
+    environment:
+      - DATABASE_URL=mysql+pymysql://icare_user:icare_password@mysql:3306/icare_db
+      - MONGODB_URL=mongodb://admin:adminpassword@mongodb:27017/
+    ports:
+      - "8003:8000"
+    depends_on:
+      - mysql
+      - mongodb
+    networks:
+      - icare-network
+
+  # ICARE SP Backend Service
+  icare-sp-backend:
+    build:
+      context: ./Icare_SP_Backend
+      dockerfile: Dockerfile
+    container_name: icare-sp-backend
+    environment:
+      - DATABASE_URL=mysql+pymysql://icare_user:icare_password@mysql:3306/icare_db
+      - MONGODB_URL=mongodb://admin:adminpassword@mongodb:27017/
+    ports:
+      - "8004:8000"
+    depends_on:
+      - mysql
+      - mongodb
+    networks:
+      - icare-network
+
+volumes:
+  mysql_data:
+  mongodb_data:
+
+networks:
+  icare-network:
+    driver: bridge

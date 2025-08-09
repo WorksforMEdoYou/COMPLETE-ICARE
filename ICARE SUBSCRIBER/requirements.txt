@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+pymysql
+alembic
+cryptography
+python-multipart
+passlib
+python-dotenv
+aiomysql
+aiohttp
+motor
+firebase-admin
