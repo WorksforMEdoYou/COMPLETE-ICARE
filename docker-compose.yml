@@ -99,6 +99,23 @@ services:
     networks:
       - icare-network
 
+  # Doctor Service
+  doctor:
+    build:
+      context: ./doctor
+      dockerfile: Dockerfile
+    container_name: icare-doctor
+    environment:
+      - DATABASE_URL=mysql+pymysql://icare_user:icare_password@mysql:3306/icare_db
+      - MONGODB_URL=mongodb://admin:adminpassword@mongodb:27017/
+    ports:
+      - "8005:8000"
+    depends_on:
+      - mysql
+      - mongodb
+    networks:
+      - icare-network
+
 volumes:
   mysql_data:
   mongodb_data:
